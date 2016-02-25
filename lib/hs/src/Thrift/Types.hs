@@ -17,6 +17,7 @@
 --
 
 {-# OPTIONS_GHC -fno-warn-orphans #-}
+{-# LANGUAGE CPP #-}
 
 module Thrift.Types where
 
@@ -31,13 +32,14 @@ import qualified Data.HashMap.Strict as Map
 import qualified Data.HashSet as Set
 import qualified Data.Vector as Vector
 
-{-
+#if !MIN_VERSION_unordered_containers(0, 2, 6)
 instance (Hashable k, Hashable v) => Hashable (Map.HashMap k v) where
   hashWithSalt salt = foldl' hashWithSalt salt . Map.toList
 
 instance (Hashable a) => Hashable (Set.HashSet a) where
   hashWithSalt = foldl' hashWithSalt
---}
+#endif
+
 instance (Hashable a) => Hashable (Vector.Vector a) where
   hashWithSalt = Vector.foldl' hashWithSalt
 
