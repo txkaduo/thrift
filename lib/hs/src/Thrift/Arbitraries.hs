@@ -1,4 +1,5 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
+{-# LANGUAGE CPP #-}
 
 module Thrift.Arbitraries where
 
@@ -26,11 +27,13 @@ import qualified Data.ByteString.Lazy as BS
 instance Arbitrary ByteString where
   arbitrary = BS.pack . filter (/= 0) <$> arbitrary
 
+#if !MIN_VERSION_QuickCheck(2, 8, 2)
 instance (Ord k, Arbitrary k, Arbitrary v) => Arbitrary (Map k v) where
   arbitrary = Map.fromList <$> arbitrary
 
 instance (Ord k, Arbitrary k) => Arbitrary (Set.Set k) where
   arbitrary = Set.fromList <$> arbitrary
+#endif
 
 instance (Arbitrary k) => Arbitrary (Vector.Vector k) where
   arbitrary = Vector.fromList <$> arbitrary
